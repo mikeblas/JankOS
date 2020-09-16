@@ -17,7 +17,7 @@ forced to be within the first 8 KiB of the kernel file.
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
- 
+
 /*
 The multiboot standard does not define the value of the stack pointer register
 (esp) and it is up to the kernel to provide a stack. This allocates room for a
@@ -35,7 +35,7 @@ undefined behavior.
 stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
- 
+
 /*
 The linker script specifies _start as the entry point to the kernel and the
 bootloader will jump to this position once the kernel has been loaded. It
@@ -57,14 +57,23 @@ _start:
 	itself. It has absolute and complete power over the
 	machine.
 	*/
- 
+
+	push %esp
+
 	/*
 	To set up a stack, we set the esp register to point to the top of the
 	stack (as it grows downwards on x86 systems). This is necessarily done
 	in assembly as languages such as C cannot function without a stack.
 	*/
 	mov $stack_top, %esp
- 
+
+	/*
+	EBX contains a pointer to the Multiboot information structure
+	EAX contains the Multiboot signature, so push that too
+	*/
+	pushl %ebx
+	pushl %eax
+
 	/*
 	This is a good place to initialize crucial processor state before the
 	high-level kernel is entered. It's best to minimize the early
@@ -75,7 +84,7 @@ _start:
 	C++ features such as global constructors and exceptions will require
 	runtime support to work as well.
 	*/
- 
+
 	/*
 	Enter the high-level kernel. The ABI requires the stack is 16-byte
 	aligned at the time of the call instruction (which afterwards pushes
@@ -85,7 +94,7 @@ _start:
 	preserved and the call is well defined.
 	*/
 	call kernel_main
- 
+
 	/*
 	If the system has nothing more to do, put the computer into an
 	infinite loop. To do that:
@@ -101,7 +110,7 @@ _start:
 	cli
 1:	hlt
 	jmp 1b
- 
+
 /*
 Set the size of the _start symbol to the current location '.' minus its start.
 This is useful when debugging or when you implement call tracing.
