@@ -28,6 +28,6 @@ multiboot_helper.o :	multiboot_helper.c multiboot_helper.h
 clean :
 	rm -f boot.o
 	rm -f kernel.o
-	rm -f stdio.o terminal.o
+	rm -f stdio.o terminal.o multiboot_helper.o
 	rm -f jankos.bin
 	rm -f jankos.iso
