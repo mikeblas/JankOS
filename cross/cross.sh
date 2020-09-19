@@ -2,8 +2,10 @@
 
 # Options
 PREFIX="$HOME/opt/cross"
-TARGET="i686-elf"
-DEST="$HOME/osdev"
+# TARGET="i686-elf"
+TARGET="x86_64-elf"
+# DEST="$HOME/osdev"
+DEST="$HOME/osdev64"
 
 # Add to the path, and add it to the bash profile
 export PATH="$PREFIX/bin:$PATH"
